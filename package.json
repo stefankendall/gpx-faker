@@ -1,0 +1,17 @@
+{
+  "name": "walking-simulator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "lodash": "^4.13.1",
+    "mkdirp": "^0.5.1",
+    "prompt": "^1.0.0",
+    "sprintf-js": "^1.0.3"
+  }
+}
