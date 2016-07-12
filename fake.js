@@ -67,7 +67,7 @@ var pointsBetween = function (start, end, speed) {
     };
     var intervals = parseInt(4 / .0001733 * distance) * multipliers[speed];
     var points = [];
-    for (var interval = 0; interval < intervals; interval++) {
+    for (var interval = 1; interval < intervals; interval++) {
         var lat = start.x + (end.x - start.x) * interval / intervals;
         var long = end.y + (end.y - start.y) / intervals * interval;
         var point = new Point(lat, long);
