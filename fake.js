@@ -2,6 +2,8 @@ var prompt = require('prompt');
 var _ = require('lodash');
 var sprintf = require('sprintf-js').sprintf;
 var fs = require('fs');
+var mkdirp = require('mkdirp');
+var Point = require('./lib/point');
 
 prompt.message = '';
 prompt.get({
@@ -18,53 +20,67 @@ prompt.get({
             description: "End <lat>,<long>",
             type: 'string',
             required: true,
-            default: "35.9165442,-78.7479476",
             before: function (value) {
                 return value.split(',');
             }
         },
-        intervals: {
-            type: 'number',
+        speed: {
+            description: "Movement speed? (w)alk, (b)ike, (c)ar",
+            type: 'string',
             required: true,
-            default: 100
+            default: "w",
+            conform: function (value) {
+                return _.includes(['w', 'b', 'c'], value);
+            }
         }
     }
 }, function (err, result) {
     var start = result.start;
     var end = result.end;
-    var intervals = result.intervals;
     start = _.map(start, parseFloat);
     end = _.map(end, parseFloat);
-    createGpxFile(start, end, intervals);
+    createGpxFile(new Point(start[0], start[1]), new Point(end[0], end[1]), result.speed);
 });
 
-var createGpxFile = function (start, end, intervals) {
-    var body = pointForCoordinatePair(start);
-    for (var interval = 0; interval < intervals; interval++) {
-        var point = [
-            (start[0] + (end[0] - start[0]) / intervals * interval).toFixed(6),
-            (start[1] + (end[1] - start[1]) / intervals * interval).toFixed(6)
-        ];
-        body += pointForCoordinatePair(point);
-    }
-    body += pointForCoordinatePair(end);
-
-    for (var i = 0; i < 1000; i++) {
-        body += pointForCoordinatePair(pointAround(end));
-    }
+var createGpxFile = function (start, end, speed) {
+    var pathPoints = pointsBetween(start, end, speed);
+    var hoverAtEndPoints = _.map(new Array(1000), function () {
+        return end.pointNearby();
+    });
+    var body = _.map(pathPoints, xmlEntryForPoint).join('');
+    body += _.map(hoverAtEndPoints, xmlEntryForPoint).join('');
 
     var header = `<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
         <gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:gpxx="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" creator="mapstogpx.com" version="1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd http://www.garmin.com/xmlschemas/GpxExtensions/v3 http://www.garmin.com/xmlschemas/GpxExtensionsv3.xsd http://www.garmin.com/xmlschemas/TrackPointExtension/v1 http://www.garmin.com/xmlschemas/TrackPointExtensionv1.xsd">\n`;
     var footer = `</gpx>`;
+    mkdirp('./paths');
     fs.writeFileSync('./paths/out.gpx', header + body + footer);
-    console.log("Done!");
+    console.log("Done! Path written to ./paths/out.gpx");
 };
 
-var pointAround = function (end) {
-    return [(end[0] + -5 / 100000 + Math.random() / 10000).toFixed(6),
-        (end[1] + -5 / 100000 + Math.random() / 10000).toFixed(6)];
+var pointsBetween = function (start, end, speed) {
+    var distance = start.distanceTo(end);
+    var multipliers = {
+        'w': 1,
+        'b': 0.5,
+        'c': 0.25
+    };
+    var intervals = parseInt(4 / .0001733 * distance) * multipliers[speed];
+    var points = [];
+    for (var interval = 0; interval < intervals; interval++) {
+        var lat = start.x + (end.x - start.x) * interval / intervals;
+        var long = end.y + (end.y - start.y) / intervals * interval;
+        var point = new Point(lat, long);
+        points.push(point);
+        if (interval % 2 == 0) {
+            points.push(point.pointNearby());
+        }
+    }
+    points.push(end);
+    return points;
 };
 
-var pointForCoordinatePair = function (pair) {
-    return sprintf('<wpt lat="%s" lon="%s"></wpt>\n', pair[0], pair[1]);
+var xmlEntryForPoint = function (point, name) {
+    var nameEntry = name ? sprintf('<name>%s</name>', name) : "";
+    return sprintf('<wpt lat="%s" lon="%s">%s</wpt>\n', point.x.toFixed(7), point.y.toFixed(7), nameEntry);
 };
