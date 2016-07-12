@@ -8,25 +8,19 @@ var matchesLatLong = function (value) {
 };
 
 prompt.message = '';
-var convertInputToPoint = function (value) {
-    var values = value.split(',');
-    return new Point(parseFloat(values[0]), parseFloat(values[1]));
-};
 prompt.get({
     properties: {
         start: {
             description: "Start <lat>,<long>",
             type: 'string',
             required: true,
-            conform: matchesLatLong,
-            before: convertInputToPoint
+            conform: matchesLatLong
         },
         end: {
             description: "End <lat>,<long>",
             type: 'string',
             required: true,
-            conform: matchesLatLong,
-            before: convertInputToPoint
+            conform: matchesLatLong
         },
         speed: {
             description: "Movement speed? (w)alk, (b)ike, (c)ar",
@@ -39,7 +33,8 @@ prompt.get({
         }
     }
 }, function (err, result) {
-    createGpxFile(result.start, result.end, result.speed);
+    createGpxFile(Point.fromString(result.start),
+        Point.fromString(result.end), result.speed);
 });
 
 var createGpxFile = function (start, end, speed) {

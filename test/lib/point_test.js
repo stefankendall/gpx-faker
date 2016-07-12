@@ -23,4 +23,12 @@ describe('Point', function () {
             expect(validLocation1.intervalsTo(validLocation2, 'c')).to.be.lessThan(5);
         });
     });
+
+    describe('#fromString()', function(){
+       it('converts string input to point objects', function(){
+            var point = Point.fromString('1.01,2.01');
+           expect(point.x).to.equal(1.01);
+           expect(point.y).to.equal(2.01);
+       });
+    });
 });
