@@ -80,7 +80,6 @@ var pointsBetween = function (start, end, speed) {
     return points;
 };
 
-var xmlEntryForPoint = function (point, name) {
-    var nameEntry = name ? sprintf('<name>%s</name>', name) : "";
-    return sprintf('<wpt lat="%s" lon="%s">%s</wpt>\n', point.x.toFixed(7), point.y.toFixed(7), nameEntry);
+var xmlEntryForPoint = function (point) {
+    return sprintf('<wpt lat="%s" lon="%s"></wpt>\n', point.x.toFixed(7), point.y.toFixed(7));
 };
