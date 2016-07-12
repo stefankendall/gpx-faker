@@ -12,7 +12,7 @@ var matchesLatLong = function (value) {
 prompt.message = '';
 var convertInputToPoint = function (value) {
     var values = value.split(',');
-    return new Point(parseFloat(values[0], values[1]);
+    return new Point(parseFloat(values[0]), parseFloat(values[1]));
 };
 prompt.get({
     properties: {
