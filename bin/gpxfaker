@@ -25,37 +25,89 @@ var askForStart = function () {
         for (var i = 0; i < 3; i++) {
             points.push(start.pointNearby());
         }
-        askForSpeed(start);
+        askForCommand(start);
     });
 };
 askForStart();
+
+var looping = false;
+var askForCommand = function (start) {
+    var loopText = "(l)oop " + (looping ? "end" : "start");
+    prompt.get({
+        properties: {
+            command: {
+                description: "Command? (m)ove, (p)ause, " + loopText + " or (q)uit",
+                type: 'string',
+                required: true,
+                default: "m",
+                conform: function (value) {
+                    return _.includes('mpql', value);
+                }
+            }
+        }
+    }, function (err, result) {
+        var command = result.command;
+
+        if (command === 'q') {
+            addStop(_.last(points));
+            createGpxFile(points);
+        }
+        else if (command === 'p') {
+            addPause(_.last(points));
+            askForCommand(start);
+        }
+        else if (command === 'm') {
+            askForSpeed(start);
+        }
+        else if (command === 'l') {
+            looping = !looping;
+            if (looping) {
+                _.last(points).loopStart = true;
+                console.log("Marked loop start at %s,%s", _.last(points).x, _.last(points).y);
+                askForCommand(start);
+            }
+            else {
+                var startIndex = _.findIndex(points, 'loopStart');
+                delete points[startIndex].loopStart;
+                var pointsToLoop = _.slice(points, startIndex);
+                prompt.get({
+                    properties: {
+                        loops: {
+                            description: "How many times should the loop run?",
+                            type: 'number',
+                            required: true,
+                            conform: function (value) {
+                                return value > 0;
+                            }
+                        }
+                    }
+                }, function (err, result) {
+                    for (var i = 0; i < result.loops; i++) {
+                        points = _.concat(points, _.clone(pointsToLoop))
+                    }
+                    askForCommand(start);
+                });
+            }
+        }
+    });
+};
 
 var askForSpeed = function (start) {
     prompt.get({
         properties: {
             speed: {
-                description: "Movement speed? (w)alk, (b)ike, (c)ar, or (p)ause at location or (q)uit",
+                description: "Movement speed? (w)alk, (b)ike, or (c)ar",
                 type: 'string',
                 required: true,
                 default: "w",
                 conform: function (value) {
-                    return _.includes(['w', 'b', 'c', 'q', 'p'], value);
+                    return _.includes('wbc', value);
                 }
             }
         }
     }, function (err, result) {
         var speed = result.speed;
-
-        if (speed === 'q') {
-            addStop(_.last(points));
-            createGpxFile(points);
-        }
-        else if (speed === 'p') {
-            addPause(_.last(points));
-        }
-        else {
-            askForEndpoint(start, speed);
-        }
+        askForEndpoint(start, speed);
     });
 };
 
@@ -75,23 +127,19 @@ var askForEndpoint = function (start, speed) {
         var end = Point.fromString(result.end);
         var pathPoints = start.pointsBetween(end, speed);
         points = points.concat(pathPoints);
-        askForSpeed(end);
+        askForCommand(end);
     });
 };
 
-var addStop = function (point) {
-    var hoverAtEndPoints = _.map(new Array(1000), function () {
+
+var addPointsAtEnd = function (point, count) {
+    var hoverAtEndPoints = _.map(new Array(count), function () {
         return point.pointNearby();
     });
     points = points.concat(hoverAtEndPoints);
 };
-
-var addPause = function (point) {
-    var hoverAtEndPoints = _.map(new Array(40), function () {
-        return point.pointNearby();
-    });
-    points = points.concat(hoverAtEndPoints);
-};
+var addStop = _.curryRight(addPointsAtEnd)(1000);
+var addPause = _.curryRight(addPointsAtEnd)(40);
 
 var createGpxFile = function (points) {
     var gpxWriter = new GpxWriter(points);
