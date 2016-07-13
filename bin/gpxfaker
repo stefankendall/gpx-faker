@@ -52,6 +52,7 @@ var askForSpeed = function (start) {
         }
         else if (speed === 'p') {
             addPause(_.last(points));
+            askForSpeed(start);
         }
         else {
             askForEndpoint(start, speed);
