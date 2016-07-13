@@ -1,24 +1,21 @@
 #!/usr/bin/env node
 
 var program = require('commander');
-var route_prompt = require('../commands/route_prompt');
+var prompt_router = require('../commands/prompt_router');
+var google_directions_router = require('../commands/google_directions_router');
 
-program.version('0.0.0');
+program.version('0.0.0')
+    .option('-g, --google_directions <url>', 'Create a google directions url')
+    .option('-s <speed>', 'speed to run route')
+    .parse(process.argv);
 
-program
-    .command('prompt')
-    .description('interactively build a route')
-    .action(route_prompt.run);
-
-program
-    .command('google <google maps direction url>')
-    .description('parse a google maps direction route and build a gpx from that')
-    .action(function () {
-
-    });
-
-program.parse(process.argv);
-
-if (process.argv.length <= 2) {
-    route_prompt.run();
+if (program.google_directions) {
+    if (!program.speed) {
+        console.error("Speed required. Must be 'w', 'b', or 'c'");
+        process.exit(1);
+    }
+    google_directions_router.convert(program.google_directions);
+}
+else {
+    prompt_router.run();
 }

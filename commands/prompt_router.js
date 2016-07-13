@@ -26,7 +26,6 @@ var askForStart = function () {
         askForCommand(start);
     });
 };
-askForStart();
 
 var looping = false;
 var askForCommand = function (start) {
@@ -142,4 +141,8 @@ var createGpxFile = function (points) {
     var gpxWriter = new GpxWriter(points);
     gpxWriter.writeTo('./paths/out.gpx');
     console.log("Done! Path written to ./paths/out.gpx");
+};
+
+module.exports = {
+    run: askForStart
 };

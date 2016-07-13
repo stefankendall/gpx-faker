@@ -18,8 +18,8 @@ describe('Point', function () {
         });
 
         it('should return few intervals for a short distance', function(){
-            expect(validLocation1.intervalsTo(validLocation2, 'w')).to.be.lessThan(20);
-            expect(validLocation1.intervalsTo(validLocation2, 'b')).to.be.lessThan(10);
+            expect(validLocation1.intervalsTo(validLocation2, 'w')).to.be.lessThan(40);
+            expect(validLocation1.intervalsTo(validLocation2, 'b')).to.be.lessThan(20);
             expect(validLocation1.intervalsTo(validLocation2, 'c')).to.be.lessThan(5);
         });
     });
