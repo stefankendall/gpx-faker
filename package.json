@@ -12,9 +12,14 @@
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha --recursive"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stefankendall/gpx-movement-faker.git"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "commander": "^2.9.0",
     "lodash": "^4.13.1",
     "mkdirp": "^0.5.1",
     "prompt": "^1.0.0",
