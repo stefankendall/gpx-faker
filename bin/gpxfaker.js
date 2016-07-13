@@ -20,7 +20,7 @@ var askForStart = function () {
         }
     }, function (err, result) {
         var start = Point.fromString(result.start);
-        for (var i = 0; i < 5; i++) {
+        for (var i = 0; i < 3; i++) {
             points.push(start.pointNearby());
         }
         askForSpeed(start);
