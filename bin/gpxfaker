@@ -8,6 +8,7 @@ program.version('0.0.0')
     .option('-g, --google_directions <url>', 'Create a google directions url')
     .option('-s, --speed <speed>', 'speed to run route')
     .option('-p, --pauses', 'pause on every segment')
+    .option('-l, --loops <loops>', 'number of loops')
     .parse(process.argv);
 
 if (program.google_directions) {
@@ -15,7 +16,7 @@ if (program.google_directions) {
         console.error("Speed required. Must be 'w', 'b', or 'c'");
         process.exit(1);
     }
-    google_directions_router.convert(program.google_directions, program.speed, program.pauses);
+    google_directions_router.convert(program.google_directions, program.speed, program.pauses, program.loops);
 }
 else {
     prompt_router.run();
