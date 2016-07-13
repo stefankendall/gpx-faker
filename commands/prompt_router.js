@@ -138,9 +138,7 @@ var addStop = _.curryRight(addPointsAtEnd)(1000);
 var addPause = _.curryRight(addPointsAtEnd)(40);
 
 var createGpxFile = function (points) {
-    var gpxWriter = new GpxWriter(points);
-    gpxWriter.writeTo('./paths/out.gpx');
-    console.log("Done! Path written to ./paths/out.gpx");
+    new GpxWriter(points).writeTo('./paths/out.gpx');
 };
 
 module.exports = {
