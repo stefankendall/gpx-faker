@@ -37,7 +37,7 @@ var askForSpeed = function (start) {
                 required: true,
                 default: "w",
                 conform: function (value) {
-                    return _.includes(['w', 'b', 'c', 'q'], value);
+                    return _.includes(['w', 'b', 'c', 'q', 'p'], value);
                 }
             }
         }
