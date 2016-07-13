@@ -1,9 +1,12 @@
 {
-  "name": "walking-simulator",
+  "name": "gpxfaker",
   "version": "1.0.0",
   "description": "",
   "directories": {
     "bin": "./bin"
+  },
+  "engines": {
+    "node": ">=6.0.0"
   },
   "main": "ttsbackup.js",
   "scripts": {

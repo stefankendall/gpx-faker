@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var prompt = require('prompt');
 var _ = require('lodash');
 var Point = require('./../lib/point');
