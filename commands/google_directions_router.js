@@ -7,7 +7,7 @@ var convert = function (url, speed, pauses, loops) {
     var points = [];
     loops = loops || 1;
     console.log("Creating %s segment loops", loops);
-    if(pauses){
+    if (pauses) {
         console.log("Each segment stop will pause");
     }
 
@@ -20,6 +20,7 @@ var convert = function (url, speed, pauses, loops) {
             }
         }
     }
+    points = points.concat(pointsNearby(_.last(points), 1000));
     new GpxWriter(points).writeTo('./paths/out.gpx');
 };
 
