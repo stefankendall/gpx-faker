@@ -7,6 +7,10 @@ var convert = function (url, speed, pauses, loops) {
     var points = [];
     loops = loops || 1;
     console.log("Creating %s segment loops", loops);
+    if(pauses){
+        console.log("Each segment stop will pause");
+    }
+
     for (var loop = 0; loop < loops; loop++) {
         for (var i = 0; i < segmentPoints.length - 1; i++) {
             var betweenPoints = segmentPoints[i].pointsBetween(segmentPoints[i + 1], speed);
