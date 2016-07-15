@@ -2,7 +2,7 @@ const GoogleDirectionParser = require('./../lib/google_direction_parser');
 const GpxWriter = require('./../lib/gpx_writer');
 var _ = require('lodash');
 
-var convert = function (url, speed, pauses, loops) {
+var convert = function (url, speed, pauses, loops, outputPath) {
     var segmentPoints = GoogleDirectionParser.parse(url);
     var points = [];
     loops = loops || 1;
@@ -21,7 +21,7 @@ var convert = function (url, speed, pauses, loops) {
         }
     }
     points = points.concat(pointsNearby(_.last(points), 1000));
-    new GpxWriter(points).writeTo('./paths/out.gpx');
+    new GpxWriter(points).writeTo(outputPath);
 };
 
 var pointsNearby = function (point, count) {

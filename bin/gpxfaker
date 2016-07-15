@@ -13,12 +13,13 @@ program.version('0.0.0')
     .option('-o, --output_file <path>', 'gpx file output path')
     .parse(process.argv);
 
+var outputPath = program.output_file || './paths/out.gpx';
 if (program.google_directions) {
     if (!program.speed) {
         console.error("Speed required. Must be 'w', 'b', or 'c'");
         process.exit(1);
     }
-    google_directions_router.convert(program.google_directions, program.speed, program.pauses, program.loops);
+    google_directions_router.convert(program.google_directions, program.speed, program.pauses, program.loops, outputPath);
 }
 else {
     new PromptRouter(program.output_file || './paths/out.gpx').run();
