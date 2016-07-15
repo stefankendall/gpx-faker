@@ -9,6 +9,8 @@ program.version('0.0.0')
     .option('-s, --speed <speed>', 'speed to run route')
     .option('-p, --pauses', 'pause on every segment')
     .option('-l, --loops <loops>', 'number of loops')
+    .option('-i, --interactive', 'Continuously rewrite a single file with new location instructions')
+    .option('-o, --output_file <path>', 'gpx file output path')
     .parse(process.argv);
 
 if (program.google_directions) {
@@ -19,5 +21,5 @@ if (program.google_directions) {
     google_directions_router.convert(program.google_directions, program.speed, program.pauses, program.loops);
 }
 else {
-    prompt_router.run();
+    prompt_router.run(program.output_file || './paths/out.gpx');
 }
