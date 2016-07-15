@@ -96,6 +96,7 @@ module.exports = class PromptRouter {
     }
 
     askForSpeed(start) {
+        var me = this;
         prompt.get({
             properties: {
                 speed: {
@@ -110,11 +111,11 @@ module.exports = class PromptRouter {
             }
         }, function (err, result) {
             var speed = result.speed;
-            this.askForEndpoint(start, speed);
+            me.askForEndpoint(start, speed);
         });
     };
 
-    askForEndpoint = function (start, speed) {
+    askForEndpoint(start, speed) {
         var me = this;
         prompt.get({
             properties: {
@@ -135,9 +136,10 @@ module.exports = class PromptRouter {
         });
     };
 
-    addPointsAtEnd(point, count) {
+    addPointsAtEnd(count) {
+        var lastPoint = _.last(this.points);
         this.points = this.points.concat(_.map(new Array(count), function () {
-            return point.pointNearby();
+            return lastPoint.pointNearby();
         }));
     };
 
