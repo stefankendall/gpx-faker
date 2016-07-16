@@ -20,7 +20,7 @@ var convert = function (url, speed, pauses, loops, outputPath) {
             }
         }
     }
-    points = points.concat(pointsNearby(_.last(points), 1000));
+    points = points.concat(pointsNearby(_.last(segmentPoints), 1000));
     new GpxWriter(points).writeTo(outputPath);
 };
 
