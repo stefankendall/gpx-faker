@@ -16,7 +16,7 @@ This tool allows you to create fake movement paths for xcode with predefined spe
 1. Create a new project (File > New Project > Single View Application)
 1. Build and run the application on your iPhone. You'll need to connect your phone with a lightning cable and select it in xcode here:
 ![xcode](docs/xcode1.png)
-1. Congrats! You're now an iOS developer. You should see a white screen. Close the app for now; you'll need to run this any time you want to fake location and movement.
+1. Congrats! You're now an iOS developer. You should see a white screen. Close the app for now; you'll need to run this new app from within xcode any time you want to fake location and movement.
 
 ## GPX Files
 
@@ -34,7 +34,7 @@ That's it! You can now select your gpx file from `Debug > Simulate Location`
 
 # Creating fake locations and movement
 
-There are currently two ways to create GPX files witht his tool.
+There are currently two ways to create GPX files with this tool.
 
 ## Command Prompt
 
@@ -70,13 +70,13 @@ At this point, you should probably pause `p` or quit `q`. If you `quit`, a .gpx 
  
 ## Google maps directions urls (Ignore this for now)
 
-Needs documentation. e.g. `gpxfaker -g "https://www.google.com/maps/dir/37.2006249,-79.4196146/37.2065041,-79.4168465/@37.1987875,-79.4185417,16z" -s w -l 10 -p`. 
+Needs documentation. 
  
 # How not to look like you're teleporting across the world
 
 1. Don't use wifi. This messes with location faking.
 1. If you're going to teleport somewhere, teleport somewhere you could reasonably get to by car. 
-1. Always teleport with a target app you're trying to fool force-closed.
+1. Always teleport with location-aware apps force-closed. If you warp with them open, they can detect the warp.
 1. Switch up the routes. Don't always walk perfect lines. This tool adds randomness to the points you enter, but the same GPX file will always run the same.
 
 # Help
