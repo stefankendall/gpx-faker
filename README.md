@@ -68,7 +68,7 @@ And then this loops back onto the command entry:
      
 At this point, you should probably pause `p` or quit `q`. If you `quit`, a .gpx file will be written to `./paths/out.gpx`. You can rename this and drag it into xcode.
  
-## Google maps directions urls
+## Google maps directions urls (Ignore this for now)
 
 Needs documentation. e.g. `gpxfaker -g "https://www.google.com/maps/dir/37.2006249,-79.4196146/37.2065041,-79.4168465/@37.1987875,-79.4185417,16z" -s w -l 10 -p`. 
  
