@@ -13,10 +13,10 @@ describe('GoogleDirectionParser', function () {
             // 35.9166567,-78.7491817
             // 35.9165702,-78.7481377
             // @35.9155799,-78.7497375
-            expect(points.length).to.equal(8);
+            expect(points.length).to.equal(7);
             expect(points[0].x).to.equal(35.9165606);
             expect(points[0].y).to.equal(-78.7479479);
-            expect(points[7].x).to.equal(35.9155799);
+            expect(points[6].x).to.equal(35.9165702);
         });
     });
 });
