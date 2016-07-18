@@ -74,6 +74,7 @@ Needs documentation. e.g. `gpxfaker -g "https://www.google.com/maps/dir/37.20062
  
 # How not to look like you're teleporting across the world
 
+1. Don't use wifi. This messes with location faking.
 1. If you're going to teleport somewhere, teleport somewhere you could reasonably get to by car. 
 1. Always teleport with a target app you're trying to fool force-closed.
 1. Switch up the routes. Don't always walk perfect lines. This tool adds randomness to the points you enter, but the same GPX file will always run the same.
