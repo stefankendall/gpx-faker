@@ -5,11 +5,11 @@ var PromptRouter = require('../commands/prompt_router');
 var google_directions_router = require('../commands/google_directions_router');
 
 program.version('0.0.0')
-    .option('-g, --google_directions <url>', 'Create a google directions url')
-    .option('-s, --speed <speed>', 'speed to run route')
-    .option('-p, --pauses', 'pause on every segment')
-    .option('-l, --loops <loops>', 'number of loops')
-    .option('-i, --interactive', 'Continuously rewrite a single file with new location instructions')
+    .option('-g, --google_directions <url>', 'create a google directions url')
+    .option('-s, --speed <speed>', 'speed to run route (used with -g)')
+    .option('-p, --pauses', 'pause on every segment (used with -g)')
+    .option('-l, --loops <loops>', 'number of loops (used with -g)')
+    .option('-i, --interactive', 'continuously rewrite a single file with new location instructions (CURRENTLY UNIMPLEMENTED)')
     .option('-o, --output_file <path>', 'gpx file output path')
     .parse(process.argv);
 
