@@ -1,12 +1,12 @@
 var prompt = require('prompt');
 var _ = require('lodash');
 var Point = require('./../lib/point');
+var VectorParser = require('./../lib/vector_parser');
 var GpxWriter = require('./../lib/gpx_writer');
 
 module.exports = class Chaser {
     constructor(outputPath) {
         this.outputPath = outputPath;
-        this.points = [];
     }
 
     run() {
@@ -24,133 +24,46 @@ module.exports = class Chaser {
                 }
             }
         }, function (err, result) {
-            var start = Point.fromString(result.start);
-            for (var i = 0; i < 3; i++) {
-                me.points.push(start.pointNearby());
-            }
-            me.askForCommand(start);
+            this.currentLocation = Point.fromString(result.start);
+            me.askForNextDirection();
         });
     }
 
-    askForCommand(start) {
+    askForNextDirection() {
         var me = this;
-        var loopText = "(l)oop " + (me.looping ? "end" : "start");
         prompt.get({
             properties: {
-                command: {
-                    description: "Command? (m)ove, (p)ause, " + loopText + " or (q)uit",
+                direction: {
+                    description: "Direction? (n)orth, (s)outh, (e)ast, (w)est, or ne/nw/se/sw",
+                    message: "Must be exactly n, e, s, w, nw, ne, sw, or se",
                     type: 'string',
                     required: true,
-                    default: "m",
                     conform: function (value) {
-                        return _.includes('mpql', value);
+                        return _.includes(['n', 's', 'e', 'w', 'ne', 'nw', 'se', 'sw'], value);
                     }
                 }
             }
         }, function (err, result) {
-            var command = result.command;
-
-            if (command === 'q') {
-                me.addStop(_.last(me.points));
-                me.createGpxFile();
-            }
-            else if (command === 'p') {
-                me.addPause(_.last(e.points));
-                me.askForCommand(start);
-            }
-            else if (command === 'm') {
-                me.askForSpeed(start);
-            }
-            else if (command === 'l') {
-                me.looping = !me.looping;
-                if (me.looping) {
-                    _.last(me.points).loopStart = true;
-                    console.log("Marked loop start at %s,%s", _.last(points).x, _.last(points).y);
-                    me.askForCommand(start);
-                }
-                else {
-                    var startIndex = _.findIndex(me.points, 'loopStart');
-                    delete me.points[startIndex].loopStart;
-                    var pointsToLoop = _.slice(me.points, startIndex);
-                    prompt.get({
-                        properties: {
-                            loops: {
-                                description: "How many times should the loop run?",
-                                type: 'number',
-                                required: true,
-                                conform: function (value) {
-                                    return value > 0;
-                                }
-                            }
-                        }
-                    }, function (err, result) {
-                        for (var i = 0; i < result.loops; i++) {
-                            me.points = _.concat(me.points, _.clone(pointsToLoop))
-                        }
-                        me.askForCommand(start);
-                    });
-                }
-            }
+            this.direction = VectorParser.parse(result.direction);
+            me.askForDistance();
         });
     }
 
-    askForSpeed(start) {
+    askForDistance() {
         var me = this;
         prompt.get({
             properties: {
-                speed: {
-                    description: "Movement speed? (w)alk, (b)ike, or (c)ar",
-                    type: 'string',
-                    required: true,
-                    default: "w",
-                    conform: function (value) {
-                        return _.includes('wbc', value);
-                    }
+                distance: {
+                    description: "Distance to walk (in meters)?",
+                    type: 'number',
+                    required: true
                 }
             }
         }, function (err, result) {
-            var speed = result.speed;
-            me.askForEndpoint(start, speed);
+            me.distanceInMeters = result.distance;
+            var points = me.currentLocation.pointsBetween(me.currentLocation.pointInDirection(me.direction, me.distanceInMeters), 'w');
+            new GpxWriter(points).writeTo(this.outputPath);
+            me.askForNextDirection();
         });
-    };
-
-    askForEndpoint(start, speed) {
-        var me = this;
-        prompt.get({
-            properties: {
-                end: {
-                    description: "End <lat>,<long>",
-                    type: 'string',
-                    required: true,
-                    conform: function (value) {
-                        return Point.matchesStringFormat(value);
-                    }
-                }
-            }
-        }, function (err, result) {
-            var end = Point.fromString(result.end);
-            var pathPoints = start.pointsBetween(end, speed);
-            me.points = me.points.concat(pathPoints);
-            me.askForCommand(end);
-        });
-    };
-
-    addPointsAtEnd(count) {
-        var lastPoint = _.last(this.points);
-        this.points = this.points.concat(_.map(new Array(count), function () {
-            return lastPoint.pointNearby();
-        }));
-    };
-
-    addStop() {
-        this.addPointsAtEnd(1000);
     }
-
-    addPause() {
-        this.addPointsAtEnd(40);
-    }
-
-    createGpxFile() {
-        new GpxWriter(this.points).writeTo(this.outputPath);
-    };
 };
