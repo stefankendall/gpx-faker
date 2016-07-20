@@ -32,6 +32,24 @@ describe('Point', function () {
         });
     });
 
+    describe('#pointInDirection()', function () {
+        it('returns a gps point in a vector direction', function () {
+            var point = Point.fromString('35.718161,-77.111222');
+
+            var endPoint = point.pointInDirection({x: 0, y: 1}, 10);
+            expect(endPoint.x).to.equal(35.718161);
+            expect(endPoint.y).to.equal(-77.111111);
+
+            endPoint = point.pointInDirection({x: 1, y: 1}, 10);
+            expect(endPoint.x).to.equal(35.718225);
+            expect(endPoint.y).to.equal(-77.111144);
+
+            endPoint = point.pointInDirection({x: 0, y: -1}, 1000);
+            expect(endPoint.x).to.equal(35.71816);
+            expect(endPoint.y).to.equal(-77.122286);
+        });
+    });
+
     describe('#matchesStringFormat()', function () {
         it('detects two numbers separated by a comma', function () {
             expect(Point.matchesStringFormat('1.0,-2.5')).to.equal(true);
