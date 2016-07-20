@@ -24,7 +24,7 @@ module.exports = class Chaser {
                 }
             }
         }, function (err, result) {
-            this.currentLocation = Point.fromString(result.start);
+            me.currentLocation = Point.fromString(result.start);
             me.askForNextDirection();
         });
     }
@@ -44,7 +44,7 @@ module.exports = class Chaser {
                 }
             }
         }, function (err, result) {
-            this.direction = VectorParser.parse(result.direction);
+            me.direction = VectorParser.parse(result.direction);
             me.askForDistance();
         });
     }
@@ -56,13 +56,19 @@ module.exports = class Chaser {
                 distance: {
                     description: "Distance to walk (in meters)?",
                     type: 'number',
+                    default: 10,
+                    conform: function (value) {
+                        return value >= 10;
+                    },
+                    message: "GPS isn't quite that accurate. The minimum distance is 10m",
                     required: true
                 }
             }
         }, function (err, result) {
-            me.distanceInMeters = result.distance;
-            var points = me.currentLocation.pointsBetween(me.currentLocation.pointInDirection(me.direction, me.distanceInMeters), 'w');
-            new GpxWriter(points).writeTo(this.outputPath);
+            var endPoint = me.currentLocation.pointInDirection(me.direction, result.distance);
+            var points = me.currentLocation.pointsBetween(endPoint, 'w');
+            new GpxWriter(points).writeTo(me.outputPath);
+            me.currentLocation = endPoint;
             me.askForNextDirection();
         });
     }

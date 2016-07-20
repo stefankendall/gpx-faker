@@ -3,13 +3,14 @@
 var program = require('commander');
 var PromptRouter = require('../commands/prompt_router');
 var google_directions_router = require('../commands/google_directions_router');
+var Chaser = require('../commands/chaser');
 
 program.version('0.0.0')
     .option('-g, --google_directions <url>', 'create a google directions url')
     .option('-s, --speed <speed>', 'speed to run route (used with -g)')
     .option('-p, --pauses', 'pause on every segment (used with -g)')
     .option('-l, --loops <loops>', 'number of loops (used with -g)')
-    .option('-i, --interactive', 'continuously rewrite a single file with new location instructions (CURRENTLY UNIMPLEMENTED)')
+    .option('-i, --interactive', 'continuously rewrite a single file with new location instructions')
     .option('-o, --output_file <path>', 'gpx file output path')
     .parse(process.argv);
 
@@ -20,6 +21,12 @@ if (program.google_directions) {
         process.exit(1);
     }
     google_directions_router.convert(program.google_directions, program.speed, program.pauses, program.loops, outputPath);
+}
+else if (program.interactive) {
+    if (!program.output_file) {
+        console.log("You probably want to specify an output file already in your xcode project");
+    }
+    new Chaser(outputPath).run();
 }
 else {
     new PromptRouter(program.output_file || './paths/out.gpx').run();
