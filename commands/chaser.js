@@ -7,6 +7,8 @@ var GpxWriter = require('./../lib/gpx_writer');
 module.exports = class Chaser {
     constructor(outputPath) {
         this.outputPath = outputPath;
+        this.defaultDistance = 10;
+        this.defaultSpeed = 'w';
     }
 
     run() {
@@ -56,7 +58,7 @@ module.exports = class Chaser {
                 distance: {
                     description: "Distance to walk (in meters)?",
                     type: 'number',
-                    default: 10,
+                    default: this.defaultDistance,
                     conform: function (value) {
                         return value >= 10;
                     },
@@ -67,19 +69,21 @@ module.exports = class Chaser {
                     description: "Movement speed? (w)alk, (b)ike, (c)ar, or (h)ighway",
                     type: 'string',
                     required: true,
-                    default: "w",
+                    default: this.defaultSpeed,
                     conform: function (value) {
                         return _.includes('wbch', value);
                     }
                 }
             }
-        }, function (err, result) {
+        }, _.bind(function (err, result) {
+            this.defaultDistance = result.distance;
+            this.defaultSpeed = result.speed;
             var endPoint = me.currentLocation.pointInDirection(me.direction, result.distance);
             var points = me.currentLocation.pointsBetween(endPoint, result.speed);
             points = points.concat(_.last(points).pointsNearby(1000));
             new GpxWriter(points).writeTo(me.outputPath);
             me.currentLocation = endPoint;
             me.askForNextDirection();
-        });
+        }, this));
     }
 };
