@@ -27,8 +27,8 @@ describe('Point', function () {
     describe('#fromString()', function () {
         it('converts string input to point objects', function () {
             var point = Point.fromString('1.01,2.01');
-            expect(point.x).to.equal(1.01);
-            expect(point.y).to.equal(2.01);
+            expect(point.lat).to.equal(1.01);
+            expect(point.lon).to.equal(2.01);
         });
     });
 
@@ -37,16 +37,16 @@ describe('Point', function () {
             var point = Point.fromString('35.718161,-77.111222');
 
             var endPoint = point.pointInDirection({x: 0, y: 1}, 10);
-            expect(endPoint.x).to.equal(35.718161);
-            expect(endPoint.y).to.equal(-77.111111);
+            expect(endPoint.lat).to.equal(35.718251);
+            expect(endPoint.lon).to.equal(-77.111222);
 
             endPoint = point.pointInDirection({x: 1, y: 1}, 10);
-            expect(endPoint.x).to.equal(35.718225);
-            expect(endPoint.y).to.equal(-77.111144);
+            expect(endPoint.lat).to.equal(35.718225);
+            expect(endPoint.lon).to.equal(-77.111144);
 
             endPoint = point.pointInDirection({x: 0, y: -1}, 1000);
-            expect(endPoint.x).to.equal(35.71816);
-            expect(endPoint.y).to.equal(-77.122286);
+            expect(endPoint.lat).to.equal(35.709178);
+            expect(endPoint.lon).to.equal(-77.111222);
         });
     });
 

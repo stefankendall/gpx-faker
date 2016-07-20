@@ -66,7 +66,7 @@ module.exports = class PromptRouter {
                 me.looping = !me.looping;
                 if (me.looping) {
                     _.last(me.points).loopStart = true;
-                    console.log("Marked loop start at %s,%s", _.last(points).x, _.last(points).y);
+                    console.log("Marked loop start at %s,%s", _.last(points).lat, _.last(points).lon);
                     me.askForCommand(start);
                 }
                 else {
