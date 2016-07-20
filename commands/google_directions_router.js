@@ -16,18 +16,12 @@ var convert = function (url, speed, pauses, loops, outputPath) {
             var betweenPoints = segmentPoints[i].pointsBetween(segmentPoints[i + 1], speed);
             points = points.concat(betweenPoints);
             if (pauses) {
-                points = points.concat(pointsNearby(segmentPoints[i + 1], 20));
+                points = points.concat(segmentPoints[i + 1].pointsNearby(20));
             }
         }
     }
-    points = points.concat(pointsNearby(_.last(segmentPoints), 1000));
+    points = points.concat(_.last(segmentPoints).pointsNearby(1000));
     new GpxWriter(points).writeTo(outputPath);
-};
-
-var pointsNearby = function (point, count) {
-    return _.map(new Array(count), function () {
-        return point.pointNearby();
-    });
 };
 
 module.exports = {

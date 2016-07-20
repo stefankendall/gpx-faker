@@ -67,6 +67,7 @@ module.exports = class Chaser {
         }, function (err, result) {
             var endPoint = me.currentLocation.pointInDirection(me.direction, result.distance);
             var points = me.currentLocation.pointsBetween(endPoint, 'w');
+            points = points.concat(_.last(points).pointsNearby(1000));
             new GpxWriter(points).writeTo(me.outputPath);
             me.currentLocation = endPoint;
             me.askForNextDirection();
