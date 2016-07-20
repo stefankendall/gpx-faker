@@ -100,12 +100,12 @@ module.exports = class PromptRouter {
         prompt.get({
             properties: {
                 speed: {
-                    description: "Movement speed? (w)alk, (b)ike, or (c)ar",
+                    description: "Movement speed? (w)alk, (b)ike, (c)ar, or (h)ighway",
                     type: 'string',
                     required: true,
                     default: "w",
                     conform: function (value) {
-                        return _.includes('wbc', value);
+                        return _.includes('wbch', value);
                     }
                 }
             }

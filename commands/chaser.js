@@ -62,11 +62,20 @@ module.exports = class Chaser {
                     },
                     message: "GPS isn't quite that accurate. The minimum distance is 10m",
                     required: true
+                },
+                speed: {
+                    description: "Movement speed? (w)alk, (b)ike, (c)ar, or (h)ighway",
+                    type: 'string',
+                    required: true,
+                    default: "w",
+                    conform: function (value) {
+                        return _.includes('wbch', value);
+                    }
                 }
             }
         }, function (err, result) {
             var endPoint = me.currentLocation.pointInDirection(me.direction, result.distance);
-            var points = me.currentLocation.pointsBetween(endPoint, 'w');
+            var points = me.currentLocation.pointsBetween(endPoint, result.speed);
             points = points.concat(_.last(points).pointsNearby(1000));
             new GpxWriter(points).writeTo(me.outputPath);
             me.currentLocation = endPoint;
