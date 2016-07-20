@@ -72,6 +72,8 @@ At this point, you should probably pause `p` or quit `q`. If you `quit`, a .gpx 
 
 This is the easier way to use the tool! Before you do this, you need to run `set +H` in terminal. You need to do this for each new terminal window, or you can add this to the bottom of your `~/.bash_profile` file.
 
+![xcode](docs/howto.gif)
+
 Consider this example:
 
     gpxfaker -s w -p -l 10 -g "https://www.google.com/maps/dir/38.285047,-85.5695294/38.2743602,-85.5640632/38.2790561,-85.5480772/38.2911994,-85.5530793/38.2858161,-85.5693747/@38.2822743,-85.5561218,14.74z/data=!4m2!4m1!3e0"
@@ -79,8 +81,7 @@ Consider this example:
 Let's break the flags down.
 ### `-g <url>` 
 
-google maps directions url. Note that it does NOT FOLLOW DIRECTIONS. Movement is a straight line between all the endpoints in the URL.
-   
+google maps directions url. Note that it does NOT FOLLOW DIRECTIONS. Movement is a straight line between all the endpoints in the URL.   
    
 ### `-s <speed>`
 specify the speed. One of `w,b,c`.
