@@ -83,6 +83,7 @@ module.exports = class Chaser {
             points = points.concat(_.last(points).pointsNearby(1000));
             new GpxWriter(points).writeTo(me.outputPath);
             me.currentLocation = endPoint;
+            console.log("You are now at %s,%s", endPoint.lat.toFixed(6), endPoint.lon.toFixed(6));
             me.askForNextDirection();
         }, this));
     }
