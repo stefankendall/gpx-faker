@@ -138,13 +138,11 @@ module.exports = class PromptRouter {
 
     addPointsAtEnd(count) {
         var lastPoint = _.last(this.points);
-        this.points = this.points.concat(_.map(new Array(count), function () {
-            return lastPoint.pointNearby();
-        }));
+        this.points = this.points.concat(lastPoint.pointsNearby(count));
     };
 
     addStop() {
-        this.addPointsAtEnd(1000);
+        this.addPointsAtEnd(5000);
     }
 
     addPause() {
