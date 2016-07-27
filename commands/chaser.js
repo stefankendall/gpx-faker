@@ -27,6 +27,7 @@ module.exports = class Chaser {
             }
         }, function (err, result) {
             me.currentLocation = Point.fromString(result.start);
+            new GpxWriter(me.currentLocation.pointsNearby(1000)).writeTo(me.outputPath);
             me.askForNextDirection();
         });
     }
@@ -36,17 +37,31 @@ module.exports = class Chaser {
         prompt.get({
             properties: {
                 direction: {
-                    description: "Direction? (n)orth, (s)outh, (e)ast, (w)est, or ne/nw/se/sw",
-                    message: "Must be exactly n, e, s, w, nw, ne, sw, or se",
+                    description: "Direction? (n)orth, (s)outh, (e)ast, (w)est, or ne/nw/se/sw, or a bearing",
+                    message: "Must be exactly n, e, s, w, nw, ne, sw, se, or a bearing",
                     type: 'string',
                     required: true,
                     conform: function (value) {
-                        return _.includes(['n', 's', 'e', 'w', 'ne', 'nw', 'se', 'sw'], value);
+                        return _.includes(['n', 's', 'e', 'w', 'ne', 'nw', 'se', 'sw'], value) || !isNaN(parseInt(value));
+                    },
+                    before: function (value) {
+                        if (!isNaN(parseInt(value))) {
+                            return parseInt(value);
+                        }
+                        return value;
                     }
                 }
             }
         }, function (err, result) {
-            me.direction = VectorParser.parse(result.direction);
+            if (_.isNumber(result.direction)) {
+                var angle = Math.PI / 2 - result.direction * Math.PI / 180;
+                var x = Math.cos(angle);
+                var y = Math.sin(angle);
+                me.direction = {x: x, y: y};
+            }
+            else {
+                me.direction = VectorParser.parse(result.direction);
+            }
             me.askForDistance();
         });
     }
